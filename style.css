@@ -1,0 +1,13 @@
+ .pm-nav.nav-link {
+    display: initial;
+    padding: initial;
+    color: rgb(232, 32, 47);
+    text-decoration: none;
+    transition: none;
+ }
+ 
+ 
+ .login .search.form-control {
+   width: auto;
+   display: inline-block;
+ }
