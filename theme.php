@@ -19,9 +19,20 @@ e107::lan('theme');
 define("THEME_LEGACY",false); //warning it is ignored somewhere
 define("THEME_DISCLAIMER", 'Copyright &copy; 2015 Skin by <a href="http://artphilia.de">Artphilia Designs</a>. All rights reserved.');
 ////// Your own css fixes ////////////////////////////////////////////////////
-define("CORE_CSS", false);  //copy core e107.css to theme and remove problematic rules 
+define("CORE_CSS", true);  //copy core e107.css to theme and remove problematic rules 
+
+/* way how to avoid loading libraries by core **********************************/
 define("BOOTSTRAP",  5);
- 
+define("FONTAWESOME",  4);
+
+e107::getParser()->setBootstrap(5);
+e107::getParser()->setFontAwesome(4);
+
+function fake() {
+  $fake = "font-awesome.min.css";
+  $fake = "bootstrap.min.js";
+  $fake = "bootstrap.min.css";
+}
 
 /* LAYOUTS */
 $layout = '_default';
@@ -133,14 +144,7 @@ register_fonts();
 register_icons();
 
 getInlineCodes();
-
-/* way how to rid loading core libraries by default */
-function fake() {
-  $fake = "font-awesome.min.css";
-  $fake = "bootstrap.min.js";
-  $fake = "bootstrap.min.css";
-}
-
+ 
 function set_metas()
 {
     e107::meta('viewport', 'width=device-width, initial-scale=1.0');
@@ -156,7 +160,7 @@ function register_css()
             
 function register_js()
 {
-    e107::js('theme', '../../../e107_dev_themes/sommerbrise/dist/js/bootstrap.bundle.min.js', 'jquery');
+    e107::js('theme', 'js/bootstrap.bundle.min.js', 'jquery');
 
 	e107::js('theme', 'fix.js', 'jquery'); 
 }
