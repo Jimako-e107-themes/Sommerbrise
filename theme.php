@@ -23,7 +23,7 @@ define("CORE_CSS", true);  //copy core e107.css to theme and remove problematic 
 
 /* way how to avoid loading libraries by core **********************************/
 define("BOOTSTRAP",  5);
-define("FONTAWESOME",  4);
+define("FONTAWESOME",  5);
 
 e107::getParser()->setBootstrap(5);
 e107::getParser()->setFontAwesome(4);
@@ -42,35 +42,35 @@ $LAYOUT['_header_'] = '';
 $LAYOUT['_footer_'] = '';
 
 /*  default values */ 
-$search_shortcode = "{SEARCH}";
-$topnav_shortcode = '{SIGNIN}';
-$navbar_shortcode = '{NAVIGATION}';
-$slogan_shortcode = '{SITETAG}';
-$sitename_shortcode = '{SITENAME}';
+$elements['search_shortcode'] = "{SEARCH}";
+$elements['topnav_shortcode'] = '{SIGNIN}';
+$elements['navbar_shortcode'] = '{NAVIGATION}';
+$elements['slogan_shortcode'] = '{SITETAG}';
+$elements['sitename_shortcode'] = '{SITENAME}';
+$elements['footer_message'] = ''; 
+$elements['skinchange_block'] = ''; 
+$elements['footer_message'] = ''; 
+$elements['skinchange_block'] = ''; 
 
-$skinchange_block = "";
-$footer_message = "";
+$LAYOUT_SIDEBAR = 
+'{SETSTYLE=block-sidebar}
+  {MENU=1}
+  {DEFAULT_MENUAREA=1}
+  
+  {SETSTYLE=sidebar}
+  {MENU=2}
+  {DEFAULT_MENUAREA=2}
+  
+  {SETSTYLE=block-sidebar}
+  {MENU=3}
+  {DEFAULT_MENUAREA=3}
+  <div class="text-center">'.$elements['search_shortcode'].'</div>
+ ';
+$elements['layout_sidebar']     = $LAYOUT_SIDEBAR; 
 
-$LAYOUT_HEADER = '
-<div class="login"><span class="fa fa-sign-in"></span> '.$topnav_shortcode.' '.$search_shortcode.'</div>
-<div id="sitename">'.$sitename_shortcode.'</div>
-<div id="spacer"></div>
-<div id="slogan">'.$slogan_shortcode.'</div>
-<div id="menu">'.$navbar_shortcode.'</div>
-<div class="grid-wrapper container">	
-	<div class="gb-full content">';
 
-$LAYOUT_FOOTER  = '</div>
-	<!-- START BLOCK : footer -->
-    <div class="gb-full footer">
-		<hr />
-		'.$footer_message.'
-		{SITEDISCLAIMER}
-		<div class="copyright">{THEME_DISCLAIMER}</div>'.$skinchange_block.'
-    </div>
-</div> <!-- closing content grid -->   			
-<!-- END BLOCK : footer -->
-</div><!-- closing container -->';
+$LAYOUT_HEADER =  theme_settings::layout_header($elements);
+$LAYOUT_FOOTER =  theme_settings::layout_footer($elements);
 
 $LAYOUT['index'] = $LAYOUT_HEADER.'
 <div class="gb-full">
@@ -78,7 +78,8 @@ $LAYOUT['index'] = $LAYOUT_HEADER.'
 	<div class="gb-50">{ALERTS}{SETSTYLE=main}{---}{MENU=1}</div>
 </div>'.$LAYOUT_FOOTER;
 
-$LAYOUT['full'] = $LAYOUT_HEADER.'{ALERTS}{SETSTYLE=main}{---}{MENU=1}'.$LAYOUT_FOOTER;
+$LAYOUT['full'] = $LAYOUT_HEADER.' 
+{ALERTS}{SETSTYLE=main}<div class="gb-full">{---}</div>'.$LAYOUT_FOOTER;
 
 $LAYOUT['default'] = $LAYOUT_HEADER.'
 <div class="gb-full">
@@ -167,13 +168,10 @@ function register_js()
            
 function register_fonts()
 {
-  e107::library('load', 'fontawesome');  
-  define("FONTAWESOME", 4);	
-  //getLegacyBSFA font-awesome.min.css
-  
+ 
   e107::css('url', 'https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700&display=swap&subset=latin-ext');
   e107::css('url', 'https://fonts.googleapis.com/css?family=Courgette&display=swap&subset=latin-ext');
- 
+  e107::css('url', 'https://use.fontawesome.com/releases/v5.3.1/css/all.css');
 }
           
 function register_icons()

@@ -1,13 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<e107Theme name="Sommerbrise" version="2.0.0" date="2021-04-09" compatibility="2.3.0">
-	<author name ="Jimako" email="jimako@jimako.sk" url="https://e107.sk" />
-	<summary>efiction skin by Artphilia ported for e107</summary>
-	<description>efiction skin by Artphilia ported for e107</description>
+<e107Theme name="Sommerbrise" version="2.0.1" date="2021-09-05" compatibility="2.3.0">
+	<author name ="Jimako" email="jimako@jimako.sk" url="https://e107sk.com" />
+	<summary>efiction skin Sommerbrise by Artphilia ported for e107</summary>
+	<description>efiction skin Sommerbrise by Artphilia ported for e107</description>
 	<category>generic</category>
-	<plugins>
-		<plugin name='gallery' url='core' />
-		<plugin name='social' url='core' />
-	</plugins>
 	<keywords>
 		<word>bootstrap</word>
 		<word>clean</word>

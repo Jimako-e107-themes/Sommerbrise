@@ -3,69 +3,81 @@
 
 class theme_settings
 {
-    public static function get_jmlayouts() {
-    
-        if (e107::isInstalled('jmlayouts')) {
-            $tmp = e107::getDb()->retrieve('jmlayout', '*', null, true);
-            foreach ($tmp as $layout) {
-                $mode = $layout['layout_mode'] ;
-                $layoutsOptions[$mode] =   $layout;
-            }
-        }
-        else {
-			/* without plugin do it manually... */
-            $layoutsOptions['home']['layout_header'] = 'header_default.html';   
-            $layoutsOptions['home']['layout_footer'] = 'footer_default.html';   
-            $layoutsOptions['index']['layout_header'] = 'header_efiction.html';
-            $layoutsOptions['index']['layout_footer'] = 'footer_default.html';
-        } 
-        return $layoutsOptions;
+   public  function layout_header($elements = array())  {
+ 
+        $defaults['search_shortcode'] = "{SEARCH}";
+        $defaults['topnav_shortcode'] = '{SIGNIN}';
+        $defaults['navbar_shortcode'] = '{NAVIGATION}';
+        $defaults['slogan_shortcode'] = '{SITETAG}';
+        $defaults['sitename_shortcode'] = '{SITENAME}';  
+        $defaults['layout_sidebar']     = '{SETSTYLE=block-sidebar}{MENU=1}'; 
+        
+        $parms = array_merge($defaults, $elements);
+ 
+        extract($parms);
+ 
+        $LAYOUT_HEADER = 
+        '<div class="login"><span class="fa fa-sign-in"></span> '.$topnav_shortcode.' '.$search_shortcode.'</div>
+         <div id="sitename">'.$sitename_shortcode.'</div>
+         <div id="spacer"></div>
+         <div id="slogan">'.$slogan_shortcode.'</div>
+         <div id="menu">'.$navbar_shortcode.'</div>
+         <div class="grid-wrapper container">	
+         <div class="gb-full content">'	 		
+        ;
+        return $LAYOUT_HEADER;  
     }
     
+    
+    public static function layout_footer($elements = array())  {
+ 
+        $defaults['footer_message'] = "";
+        $defaults['skinchange_block'] = '';
+        
+        $parms = array_merge($defaults, $elements);
+ 
+        extract($parms);
+
+        $LAYOUT_FOOTER  = 
+          ' 
+              <!-- START BLOCK : footer -->
+              <div class="gb-full footer">
+          		<hr />
+          		'.$footer_message.'
+          		{SITEDISCLAIMER}
+          		<div class="copyright">{THEME_DISCLAIMER}</div>'.$skinchange_block.'
+              </div>
+          </div> <!-- closing content grid -->   			
+          <!-- END BLOCK : footer -->
+          </div><!-- closing container -->'; 
+                 
+         
+        
+        return $LAYOUT_FOOTER;  
+    }
+    
+        
     public static function get_membersonly_template()
     {
         /* this is workaround for e_IFRAME fatal error in PHP 8 to display standalone login page */
-		
-		/* copy from theme.php */
-        $search_shortcode = "{SEARCH}";
-        $topnav_shortcode = '{SIGNIN}';
-        $navbar_shortcode = '{NAVIGATION}';
-        $slogan_shortcode = '{SITETAG}';
-        $sitename_shortcode = '{SITENAME}';
+ 
         
         if(e107::isInstalled('efiction'))
         { 
         	$search_shortcode = "{SEARCH}";  //temp todo use search addon, it is not parsed, it is correct for now
             
-        }	
-     	$LAYOUT_HEADER = '
-			<div class="login"><span class="fa fa-sign-in"></span> '.$topnav_shortcode.' '.$search_shortcode.'</div>
-			<div id="sitename">'.$sitename_shortcode.'</div>
-			<div id="spacer"></div>
-			<div id="slogan">'.$slogan_shortcode.'</div>
-			<div id="menu">'.$navbar_shortcode.'</div>
-			<div class="grid-wrapper container">	
-				<div class="gb-full content">';
-
-		$LAYOUT_FOOTER  = '</div>
-			<!-- START BLOCK : footer -->
-			<div class="gb-full footer">
-					<hr />
-			'.$footer_message.'
-			{SITEDISCLAIMER}
-			<div class="copyright">{THEME_DISCLAIMER}</div>
-			'.$skinchange_block.'
-			</div>
-			</div> <!-- closing content grid -->   			
-			<!-- END BLOCK : footer -->';   
-         
-     
+        }
+        	
+     	$LAYOUT_HEADER =  self::$layout_header($elements);
+        $LAYOUT_FOOTER =  self::$settings::layout_footer($elements);
+ 
         $tmp['membersonly_start'] = $LAYOUT_HEADER;
 
         $tmp['membersonly_end'] = $LAYOUT_FOOTER;
  
         return $tmp;
     }
+ 
     
     public static function get_singleforms() {
 	    //$tmp['login_logo'] = '<div class="center">{LOGO: login}</div>';

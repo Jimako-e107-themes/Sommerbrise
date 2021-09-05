@@ -9,87 +9,62 @@
  * e107 Bootstrap Theme Shortcodes. 
  *
 */
-
-
+ 
 class theme_shortcodes extends e_shortcode
 {
-    var $override = true;
-    var $file_extension = '.html';
-    var $sitetheme      = 'bootstrap3';
-
-    private $pm_prefs       = null;
-    private $pm             = null;
-    private $userReg        = false;
-    function __construct()
-    {
-        if( e107::isInstalled('pm') )
-        {
-            e107::includeLan(e_PLUGIN.'pm/languages/'.e_LANGUAGE.'.php');
-            require_once(e_PLUGIN."pm/pm_func.php");
     
-            $this->pm = new pmbox_manager();      
-            $this->pm_prefs = $this->pm->prefs();	
+     /**
+    /* WAY HOW TO DISPLAY MENUS FROM DEFAULT LAYOUT on other layouts
+    /* {DEFAULT_MENUAREA=100}.
+     **/
+    public function sc_default_menuarea($parm)
+    {
+        $path = $parm;
+        /* don't render anything for default layout, let it on core, it has to be set in Menu Manager for default layout */
+        if (THEME_LAYOUT == e107::getPref('sitetheme_deflayout')) {
+            return '';
         }
-      
-        $this->sitetheme = e107::getPref('sitetheme');
-        $this->userReg  = defset('USER_REGISTRATION');
+        $footermenu = e107::getMenu();
+        // tell menu manager that you want menus from default layout
+        $footermenu->eMenuActive = $this->getDataLegacyTheme(e107::getPref('sitetheme_deflayout'));
+        // render default menus and save it for later use
+        $text = $footermenu->renderArea($parm);
+        // return it back because it has to work without change in Menu Manager
+        $footermenu->eMenuActive = $this->getDataLegacyTheme(THEME_LAYOUT);
 
-        if(e107::isInstalled('jmtheme')) 
-        {
-            $where = 'layout_theme = "'.$this->sitetheme.'" AND layout_mode = "'.THEME_LAYOUT.'" LIMIT 1 ';
-          $this->customlayout = e107::getDb()->retrieve('jmlayout', '*', $where ); 
-        }
-          
-        if (is_readable(e_THEME.$this->sitetheme."/theme.html")) 
-        {
-             $this->file_extension = ".html";
-  
-        }
-        else $this->file_extension = ".php";           
+        return $text;
     }
 
-	/**
-	 * Special Header Shortcode for dynamic menuarea templates.
-	 * @shortcode {---HEADER---}
-	 * @return string
-	 */
-	function sc_header()
-	{    
-		$header = varset( $this->customlayout['layout_header'] , "header_default");	  
-		$headerpath = e_THEME. $this->sitetheme.'/headers/'.$header. $this->file_extension;
-    
-		if(file_exists($headerpath)) {        
-			$text = file_get_contents($headerpath);    	 
-			$text = e107::getParser()->parseTemplate($text);   
-        } 
-	    else $text = '';
-		return $text;
-    }		
-  
-	/**
-	 * Special Footer Shortcode for dynamic menuarea templates.
-	 * @shortcode {---FOOTER---}
-	 * @return string
-	 */
-	function sc_footer()
-	{
-		$footer = varset( $this->customlayout['layout_footer'] , "footer_default");
-		$footerpath = e_THEME. $this->sitetheme.'/footers/'.$footer.$this->file_extension;
+    /**
+     * Function to retrieve Menu data from tables.
+     * original: private function getDataLegacy()
+     * change: Layout name as parameter.
+     */
+    private function getDataLegacyTheme($menu_layout_field = '')
+    {
+        $sql = e107::getDb();
+        //original:  $menu_layout_field = THEME_LAYOUT!=e107::getPref('sitetheme_deflayout') ? THEME_LAYOUT : "";
+        $menu_layout_field = $menu_layout_field != e107::getPref('sitetheme_deflayout') ? THEME_LAYOUT : '';
+        $cacheData = e107::getCache()->retrieve_sys('menus_'.USERCLASS_LIST.'_'.md5(e_LANGUAGE.$menu_layout_field));
+        $menu_data = e107::unserialize($cacheData);
 
-		if(file_exists($footerpath)) {
-		    $text = file_get_contents($footerpath); 
-             if(USER_AREA AND !$_GET['configure']) { 
-						   $text = e107::getParser()->parseTemplate($text); 
-					   }     
-		} 
-        else $text = '';
-		return $text;
-   }
- 
+        $eMenuArea = array();
+        if (empty($menu_data) || !is_array($menu_data)) {
+            $menu_qry = 'SELECT * FROM #menus WHERE menu_location > 0 AND menu_class IN ('.USERCLASS_LIST.') AND menu_layout = "'.$menu_layout_field.'" ORDER BY menu_location,menu_order';
+            if ($sql->gen($menu_qry)) {
+                while ($row = $sql->fetch()) {
+                    $eMenuArea[$row['menu_location']][] = $row;
+                }
+            }
+            $menu_data['menu_area'] = $eMenuArea;
+            $menuData = e107::serialize($menu_data, 'json');
+            e107::getCache()->set_sys('menus_'.USERCLASS_LIST.'_'.md5(e_LANGUAGE.$menu_layout_field), $menuData);
+        } else {
+            $eMenuArea = $menu_data['menu_area'];
+        }
+        return $eMenuArea;
+    }
 }
 
 
-
-
-
-?>
+ 
