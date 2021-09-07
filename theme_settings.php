@@ -1,9 +1,10 @@
 <?php
 
+//var_dump(e107::getPref('membersonly_enabled'));
 
 class theme_settings
 {
-   public  function layout_header($elements = array())  {
+   public function layout_header($elements = array())  {
  
         $defaults['search_shortcode'] = "{SEARCH}";
         $defaults['topnav_shortcode'] = '{SIGNIN}';
@@ -29,7 +30,7 @@ class theme_settings
     }
     
     
-    public static function layout_footer($elements = array())  {
+    public function layout_footer($elements = array())  {
  
         $defaults['footer_message'] = "";
         $defaults['skinchange_block'] = '';
@@ -56,36 +57,51 @@ class theme_settings
         return $LAYOUT_FOOTER;  
     }
     
-        
+    public static function login_template_settings()
+    {
+    
+       if(e107::getPref('membersonly_enabled')) {
+         return self::get_membersonly_template();
+       }
+        /* this is workaround for e_IFRAME fatal error in PHP 8 to display standalone login page */       	
+     	$tmp['page_start'] =  self::layout_header();
+        $tmp['page_end']   =  self::layout_footer();
+        $tmp['page_logo'] = "";
+        return $tmp;    
+    
+    }        
+    
+    public static function signup_template_settings()
+    {
+    
+       if(e107::getPref('membersonly_enabled')) {
+         return self::get_membersonly_template();
+       }
+       else {
+         return self::login_template_settings();
+       }
+    } 
+    
     public static function get_membersonly_template()
     {
-        /* this is workaround for e_IFRAME fatal error in PHP 8 to display standalone login page */
- 
         
-        if(e107::isInstalled('efiction'))
-        { 
-        	$search_shortcode = "{SEARCH}";  //temp todo use search addon, it is not parsed, it is correct for now
-            
-        }
-        	
-     	$LAYOUT_HEADER =  self::$layout_header($elements);
-        $LAYOUT_FOOTER =  self::$settings::layout_footer($elements);
- 
-        $tmp['membersonly_start'] = $LAYOUT_HEADER;
+        /* let there only what you want for quests to see or use HTML markup directly */
+        $defaults['search_shortcode'] = " ";
+        $defaults['topnav_shortcode'] = '{SIGNIN}';
+        $defaults['navbar_shortcode'] = ' ';
+        $defaults['slogan_shortcode'] = '{SITETAG}';
+        $defaults['sitename_shortcode'] = '{SITENAME}';  
+        $defaults['layout_sidebar']     = ' '; 
+        
+        
+        /* this is workaround for e_IFRAME fatal error in PHP 8 to display standalone login page */       	
+     	$tmp['page_start'] =  self::layout_header($defaults);
+        $tmp['page_end']   =  self::layout_footer($defaults);
+        $tmp['page_logo'] = "";
 
-        $tmp['membersonly_end'] = $LAYOUT_FOOTER;
- 
         return $tmp;
     }
  
-    
-    public static function get_singleforms() {
-	    //$tmp['login_logo'] = '<div class="center">{LOGO: login}</div>';
-        $tmp['login_logo'] = "";
-        return $tmp;
-	}
- 
-    
     public static function get_linkstyle() {
     
  
@@ -137,6 +153,11 @@ class theme_settings
             $link_settings['alt_sub']['linkdivider'] = '<li><hr class="dropdown-divider"></li>';
             return $link_settings;
     }
+    
+    public static function class_submit_button($name ='') {
+		$tmp ='btn btn-primary button';
+		return $tmp;
+	}
     
     //'.$theme_settings['forum_header_background'].'
     //'.$theme_settings['forum_table_background'].'

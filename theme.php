@@ -19,7 +19,7 @@ e107::lan('theme');
 define("THEME_LEGACY",false); //warning it is ignored somewhere
 define("THEME_DISCLAIMER", 'Copyright &copy; 2015 Skin by <a href="http://artphilia.de">Artphilia Designs</a>. All rights reserved.');
 ////// Your own css fixes ////////////////////////////////////////////////////
-define("CORE_CSS", true);  //copy core e107.css to theme and remove problematic rules 
+define("CORE_CSS", false);  //copy core e107.css to theme and remove problematic rules 
 
 /* way how to avoid loading libraries by core **********************************/
 define("BOOTSTRAP",  5);
@@ -75,7 +75,7 @@ $LAYOUT_FOOTER =  theme_settings::layout_footer($elements);
 $LAYOUT['index'] = $LAYOUT_HEADER.'
 <div class="gb-full">
 	<div class="gb-50">{WMESSAGE}</div>
-	<div class="gb-50">{ALERTS}{SETSTYLE=main}{---}{MENU=1}</div>
+	<div class="gb-50">{ALERTS}{SETSTYLE=main}{---}{MENU=4}</div>
 </div>'.$LAYOUT_FOOTER;
 
 $LAYOUT['full'] = $LAYOUT_HEADER.' 
@@ -84,49 +84,29 @@ $LAYOUT['full'] = $LAYOUT_HEADER.'
 $LAYOUT['default'] = $LAYOUT_HEADER.'
 <div class="gb-full">
 	<div class="gb-70">{ALERTS}{SETSTYLE=main}{---}</div>
-	<div class="gb-30">{MENU=1}</div>
+	<div class="gb-30">'.$LAYOUT_SIDEBAR.'</div>
 </div>'.$LAYOUT_FOOTER;
-
 
 /* only in case efiction plugin is installed, otherwise use default shortcodes */
 if(e107::isInstalled('efiction'))
 { 
-	$search_shortcode = "{EFICTION_BLOCK_CONTENT: key=search}";  //temp todo use search addon, it is not parsed, it is correct for now
-    $topnav_shortcode = '<span class="fa fa-power-off"></span> {adminarea}{SIGNIN}';
-    $navbar_shortcode = '{EFICTION_BLOCK_CONTENT: key=menu}';
-    $slogan_shortcode = '{SITETAG}';
-    $sitename_shortcode = '{SITENAME}';
-    
-    $skinchange_block = "{EFICTION_BLOCK_CONTENT: key=skinchange}";
-    $footer_message = "{footer}"; 
+    $elements['search_shortcode'] = "{EFICTION_BLOCK_CONTENT: key=search}";
+    $elements['topnav_shortcode'] = '<span class="fa fa-power-off"></span> {adminarea}{SIGNIN}';
+    $elements['navbar_shortcode'] = '{EFICTION_BLOCK_CONTENT: key=menu}';
+    $elements['slogan_shortcode'] = '{SITETAG}';
+    $elements['sitename_shortcode'] = '{SITENAME}';  
+    $elements['layout_sidebar']     = ''; 
+    $elements['skinchange_block']  = "{EFICTION_BLOCK_CONTENT: key=skinchange}";
+    $elements['footer_message'] = "{footer}"; 
+ 
+    $LAYOUT_HEADER =  theme_settings::layout_header($elements);
+    $LAYOUT_FOOTER =  theme_settings::layout_footer($elements);
 }
-
-$LAYOUT_HEADER = '
-	<div class="login">'.$topnav_shortcode.' '.$search_shortcode.'</div>
-	<div id="sitename">'.$sitename_shortcode.'</div>
-	<div id="spacer"></div>
-	<div id="slogan">'.$slogan_shortcode.'</div>
-	<div id="menu">'.$navbar_shortcode.'</div>
-	<div class="grid-wrapper container">	
-		<div class="gb-full content">';
-
-$LAYOUT_FOOTER  = '		</div>	
-	<!-- START BLOCK : footer -->
-    <div class="gb-full footer">
-			<hr />
-			'.$footer_message.'
-			{SITEDISCLAIMER}
-			<div class="copyright">{THEME_DISCLAIMER}</div>
-			'.$skinchange_block.'
-    </div>
-
-	</div> <!-- closing content grid -->   			
-	<!-- END BLOCK : footer -->';
 
 $LAYOUT['efiction'] = $LAYOUT_HEADER.'{ALERTS}
 {---}'.$LAYOUT_FOOTER;
 
-
+ 
  
  
 ////// Theme meta tags /////////////////////////////////////////////////////////
@@ -154,8 +134,8 @@ function set_metas()
 function register_css()
 {
     e107::css('theme', 'css/bootstrap.css');
-    e107::css('theme', 'skin/base.css');
-    e107::css('theme', 'skin/style.css');
+	e107::css('theme', 'css/skin.css');
+ 
 	e107::css('theme', 'e107.css');
 }
             
@@ -253,7 +233,7 @@ function remove_ptags($text = '') // FIXME this is a bug in e107 if this is requ
 			case 'wmessage':	
 					if(!empty($caption))
 					{
-						echo '<h1><span>' . $caption . '</span></h1>';
+						echo '<h1><span>' . $caption . '</span></h1><br>';
 					}
 					echo $text;      
 
@@ -264,7 +244,27 @@ function remove_ptags($text = '') // FIXME this is a bug in e107 if this is requ
 					echo $text;
 			break;
 
-      
+			case "block-sidebar": {
+				
+				if (!empty($caption)) {
+					echo '<h3><span>' . $caption . '</span></h3>';   
+					//  echo $caption;
+				}
+				echo $text;
+				echo "<br /><br />";  //fix me with margin
+				break;
+			}     
+
+			case "sidebar": {
+				echo '<div align="center">';
+				if (!empty($caption)) {
+					 echo $caption;
+				}
+				echo $text;
+				echo "</div>";  //fix me with margin
+				break;
+			}
+			   
 			default:
 
 			// default style

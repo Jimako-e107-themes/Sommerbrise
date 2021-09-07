@@ -34,7 +34,7 @@ if (empty($FORUM_VIEW_START))
 $FORUM_VIEW_START = $forumname.$forum_top_nav."
   
  
-	<div class='table-responsive'>
+	<div class='table-responsive forum_viewforum'>
 	<table  class='table table-striped table-bordered table-light  table-hover'>
 	<thead><tr>
 	<th style='width:3%' class='fcaption'>&nbsp;</th>
