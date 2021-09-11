@@ -26,6 +26,7 @@ class theme_settings
          <div class="grid-wrapper container">	
          <div class="gb-full content">'	 		
         ;
+ 
         return $LAYOUT_HEADER;  
     }
     
@@ -33,12 +34,12 @@ class theme_settings
     public function layout_footer($elements = array())  {
  
         $defaults['footer_message'] = "";
-        $defaults['skinchange_block'] = '';
+        $defaults['skinchange_block'] = "{MENU: path=skinchange/skinchange}";
         
         $parms = array_merge($defaults, $elements);
  
         extract($parms);
-
+ 
         $LAYOUT_FOOTER  = 
           ' 
               <!-- START BLOCK : footer -->
@@ -63,23 +64,65 @@ class theme_settings
        if(e107::getPref('membersonly_enabled')) {
          return self::get_membersonly_template();
        }
-        /* this is workaround for e_IFRAME fatal error in PHP 8 to display standalone login page */       	
-     	$tmp['page_start'] =  self::layout_header();
+        /* this is workaround for e_IFRAME fatal error in PHP 8 to display standalone login page */    
+        
+        $defaults['layout_sidebar']     = '
+            <div class="gb-25 sidebar"></div>         
+            <div class="gb-50 content"><!-- END BLOCK : header -->'; 
+   	
+     	$tmp['page_start'] =  self::layout_header($defaults);
         $tmp['page_end']   =  self::layout_footer();
+        
         $tmp['page_logo'] = "";
+        
         return $tmp;    
     
     }        
+    
+    public static function fpw_template_settings()
+    {
+    
+       if(e107::getPref('membersonly_enabled')) {
+         $defaults =  self::get_membersonly_template();
+
+         /* because this in fpw.php:
+         	$HEAD = $tp->simpleParse($FPW_TABLE_HEADER, $sc);
+  	        $FOOT = $tp->simpleParse($FPW_TABLE_FOOTER, $sc);
+         */
+         $defaults['page_start'] = e107::getParser()->parseTemplate($defaults['page_start']);
+         $defaults['page_end'] = e107::getParser()->parseTemplate($defaults['page_end']);
+       }
+       else {        
+         $defaults =self::login_template_settings();  
+       }
+       $form_style = self::get_forms_style();
+       $fpw_settings = array_merge($defaults, $form_style);
+       $fpw_settings['fpw-start'] = '<div class=gb-20></div><div class="gb-60">';
+       $fpw_settings['fpw-end'] = '</div>';     
+       
+
+ 
+       return $fpw_settings;
+       
+    }     
     
     public static function signup_template_settings()
     {
     
        if(e107::getPref('membersonly_enabled')) {
-         return self::get_membersonly_template();
+         $defaults =  self::get_membersonly_template();
        }
-       else {
-         return self::login_template_settings();
+       else {        
+         $defaults =self::login_template_settings();  
        }
+       $form_style = self::get_forms_style();
+       $signup_settings = array_merge($defaults, $form_style);
+       $signup_settings['coppa-start'] = '<div class=gb-20></div><div class="gb-60">';
+       $signup_settings['coppa-end'] = '</div>';
+       $signup_settings['signup-start'] = '<div class=gb-30></div><div class="gb-40">';
+       $signup_settings['signup-end'] = '</div>';       
+       return $signup_settings;
+       
     } 
     
     public static function get_membersonly_template()
@@ -88,7 +131,7 @@ class theme_settings
         /* let there only what you want for quests to see or use HTML markup directly */
         $defaults['search_shortcode'] = " ";
         $defaults['topnav_shortcode'] = '{SIGNIN}';
-        $defaults['navbar_shortcode'] = ' ';
+        $defaults['navbar_shortcode'] = '<div id="menu"><ul><li>&nbsp;</li></ul></div>';
         $defaults['slogan_shortcode'] = '{SITETAG}';
         $defaults['sitename_shortcode'] = '{SITENAME}';  
         $defaults['layout_sidebar']     = ' '; 
@@ -108,21 +151,21 @@ class theme_settings
             $link_settings['main']['dropdown_on'] = " ";
     
             /* 1.st level ul */
-            $link_settings['main']['prelink'] = '<ul class="sitelinks-navbar navbar-nav mx-auto">';
+            $link_settings['main']['prelink'] = '<ul>';
             $link_settings['main']['postlink'] = '</ul>';
             /* 1.st level li */ 
-            $link_settings['main']['linkstart'] = '<li class="nav-item">';
-            $link_settings['main']['linkstart_hilite'] = '<li id="menu_current"  class="nav-item active">';  //because bg hover otherwise a active is enough
-            $link_settings['main']['linkstart_sub'] = '<li class="nav-item">';
-            $link_settings['main']['linkstart_sub_hilite'] = '<li  class="nav-item active">';
+            $link_settings['main']['linkstart'] = '<li>';
+            $link_settings['main']['linkstart_hilite'] = '<li id="menu_current">';  //because bg hover otherwise a active is enough
+            $link_settings['main']['linkstart_sub'] = '<li>';
+            $link_settings['main']['linkstart_sub_hilite'] = '<li class="active">';
             $link_settings['main']['linkcaret'] = '';
             $link_settings['main']['linkend'] = "</li>";
             
             /* 1.st level a */
-            $link_settings['main']['linkclass'] = 'nav-link'; 
-	        $link_settings['main']['linkclass_hilite'] = 'nav-link active';
-            $link_settings['main']['linkclass_sub'] = 'nav-link'; 
-            $link_settings['main']['linkclass_sub_hilite'] = 'nav-link';
+            $link_settings['main']['linkclass'] = 'link'; 
+	        $link_settings['main']['linkclass_hilite'] = 'link active';
+            $link_settings['main']['linkclass_sub'] = 'link'; 
+            $link_settings['main']['linkclass_sub_hilite'] = 'link';
  
 
             $link_settings['main_sub']['prelink'] = '<ul class="dropdown-menu">';
@@ -154,10 +197,11 @@ class theme_settings
             return $link_settings;
     }
     
-    public static function class_submit_button($name ='') {
-		$tmp ='btn btn-primary button';
-		return $tmp;
-	}
+    public static function get_forms_style() {
+      $class['submit_button'] = 'btn btn-primary button';
+      
+      return $class;
+    }
     
     //'.$theme_settings['forum_header_background'].'
     //'.$theme_settings['forum_table_background'].'
@@ -184,5 +228,7 @@ class theme_settings
   
         return $style;
 	}
+    
+    
     
 }

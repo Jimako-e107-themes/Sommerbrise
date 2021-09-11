@@ -6,8 +6,6 @@ $theme_settings = array();
 if(class_exists('theme_settings')) {
  $theme_settings = theme_settings::get_membersonly_template(); 
 }
-echo "membersonly";
-print_a($theme_settings);
  
 $MEMBERSONLY_TEMPLATE['default']['caption']	= LAN_MEMBERS_0;
 $MEMBERSONLY_TEMPLATE['default']['header']	= "<div class='container text-center' style='margin-right:auto;margin-left:auto'><br /><br />";

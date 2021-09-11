@@ -9,7 +9,7 @@ if (!defined('e107_INIT')) {
     exit();
 }
  
-$sitetheme = deftrue('USERTHEME', e107::getPref('sitetheme')); 
+ $sitetheme = deftrue('USERTHEME', e107::getPref('sitetheme'));  
 e107::getSingleton('theme_settings', e_THEME.$sitetheme."/theme_settings.php");
 
 ////// Multilanguages/ /////////////////////////////////////////////////////////
@@ -19,14 +19,14 @@ e107::lan('theme');
 define("THEME_LEGACY",false); //warning it is ignored somewhere
 define("THEME_DISCLAIMER", 'Copyright &copy; 2015 Skin by <a href="http://artphilia.de">Artphilia Designs</a>. All rights reserved.');
 ////// Your own css fixes ////////////////////////////////////////////////////
-define("CORE_CSS", false);  //copy core e107.css to theme and remove problematic rules 
+define("CORE_CSS", true);  //copy core e107.css to theme and remove problematic rules 
 
 /* way how to avoid loading libraries by core **********************************/
 define("BOOTSTRAP",  5);
 define("FONTAWESOME",  5);
 
 e107::getParser()->setBootstrap(5);
-e107::getParser()->setFontAwesome(4);
+e107::getParser()->setFontAwesome(5);
 
 function fake() {
   $fake = "font-awesome.min.css";
@@ -44,13 +44,11 @@ $LAYOUT['_footer_'] = '';
 /*  default values */ 
 $elements['search_shortcode'] = "{SEARCH}";
 $elements['topnav_shortcode'] = '{SIGNIN}';
-$elements['navbar_shortcode'] = '{NAVIGATION}';
+$elements['navbar_shortcode'] = '{NAVIGATION=main}';
 $elements['slogan_shortcode'] = '{SITETAG}';
 $elements['sitename_shortcode'] = '{SITENAME}';
 $elements['footer_message'] = ''; 
-$elements['skinchange_block'] = ''; 
-$elements['footer_message'] = ''; 
-$elements['skinchange_block'] = ''; 
+$elements['skinchange_block'] = '{SETSTYLE=default}{MENU: path=skinchange/skinchange}'; 
 
 $LAYOUT_SIDEBAR = 
 '{SETSTYLE=block-sidebar}
@@ -96,7 +94,7 @@ if(e107::isInstalled('efiction'))
     $elements['slogan_shortcode'] = '{SITETAG}';
     $elements['sitename_shortcode'] = '{SITENAME}';  
     $elements['layout_sidebar']     = ''; 
-    $elements['skinchange_block']  = "{EFICTION_BLOCK_CONTENT: key=skinchange}";
+    $elements['skinchange_block']  = "{SETSTYLE=default}{MENU: path=skinchange/skinchange}";
     $elements['footer_message'] = "{footer}"; 
  
     $LAYOUT_HEADER =  theme_settings::layout_header($elements);

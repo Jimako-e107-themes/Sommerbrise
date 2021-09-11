@@ -3394,31 +3394,31 @@ textarea.form-control-lg {
   opacity: 0.65;
 }
 
-.btn-primary, .e-tip {
+.btn-primary, .e-tip.btn {
   color: #000;
   background-color: #FFD952;
   border-color: #FFD952;
 }
-.btn-primary:hover, .e-tip:hover {
+.btn-primary:hover, .e-tip.btn:hover {
   color: #000;
   background-color: #ffdf6c;
   border-color: #ffdd63;
 }
-.btn-check:focus + .btn-primary, .btn-check:focus + .e-tip, .btn-primary:focus, .e-tip:focus {
+.btn-check:focus + .btn-primary, .btn-check:focus + .e-tip.btn, .btn-primary:focus, .e-tip.btn:focus {
   color: #000;
   background-color: #ffdf6c;
   border-color: #ffdd63;
   box-shadow: 0 0 0 0.25rem rgba(217, 184, 70, 0.5);
 }
-.btn-check:checked + .btn-primary, .btn-check:checked + .e-tip, .btn-check:active + .btn-primary, .btn-check:active + .e-tip, .btn-primary:active, .e-tip:active, .btn-primary.active, .active.e-tip, .show > .btn-primary.dropdown-toggle, .show > .dropdown-toggle.e-tip {
+.btn-check:checked + .btn-primary, .btn-check:checked + .e-tip.btn, .btn-check:active + .btn-primary, .btn-check:active + .e-tip.btn, .btn-primary:active, .e-tip.btn:active, .btn-primary.active, .active.e-tip.btn, .show > .btn-primary.dropdown-toggle, .show > .dropdown-toggle.e-tip.btn {
   color: #000;
   background-color: #ffe175;
   border-color: #ffdd63;
 }
-.btn-check:checked + .btn-primary:focus, .btn-check:checked + .e-tip:focus, .btn-check:active + .btn-primary:focus, .btn-check:active + .e-tip:focus, .btn-primary:active:focus, .e-tip:active:focus, .btn-primary.active:focus, .active.e-tip:focus, .show > .btn-primary.dropdown-toggle:focus, .show > .dropdown-toggle.e-tip:focus {
+.btn-check:checked + .btn-primary:focus, .btn-check:checked + .e-tip.btn:focus, .btn-check:active + .btn-primary:focus, .btn-check:active + .e-tip.btn:focus, .btn-primary:active:focus, .e-tip.btn:active:focus, .btn-primary.active:focus, .active.e-tip.btn:focus, .show > .btn-primary.dropdown-toggle:focus, .show > .dropdown-toggle.e-tip.btn:focus {
   box-shadow: 0 0 0 0.25rem rgba(217, 184, 70, 0.5);
 }
-.btn-primary:disabled, .e-tip:disabled, .btn-primary.disabled, .disabled.e-tip {
+.btn-primary:disabled, .e-tip.btn:disabled, .btn-primary.disabled, .disabled.e-tip.btn {
   color: #000;
   background-color: #FFD952;
   border-color: #FFD952;
@@ -7971,11 +7971,11 @@ textarea.form-control-lg {
   line-height: 2 !important;
 }
 
-.text-start {
+.text-start, .text-left {
   text-align: left !important;
 }
 
-.text-end {
+.text-end, .text-right {
   text-align: right !important;
 }
 

@@ -662,4 +662,9 @@ ul.pager {
   list-style-type: none;
 }
 
+/* forum topic centered pagination */
+.pagination {
+  justify-content: center !important;
+}
+
 /*# sourceMappingURL=skin.css.map */
